@@ -1,0 +1,25 @@
+# Secrets
+.env
+# Virtual environment
+venv/
+# Your PhD documents
+data/raw/
+data/processed/
+# Generated artifacts
+artifacts/
+# Experiment outputs
+experiments/results/
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
+# Jupyter
+.ipynb_checkpoints/
+# VS Code
+.vscode/
+# Windows
+Thumbs.db
+Desktop.ini

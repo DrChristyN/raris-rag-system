@@ -1,0 +1,86 @@
+project:
+ name: "rag-research-system"
+ version: "0.1.0"
+ domain: "biomedical-computer-vision"
+
+# ── Data paths ───────────────────────────────────────────────
+paths:
+ raw_data: "./data/raw"
+ processed_data: "./data/processed"
+ faiss_index: "./artifacts/faiss_index"
+ embedding_cache: "./artifacts/embedding_cache"
+ hf_cache: "./artifacts/hf_cache"
+ results: "./experiments/results"
+
+# ── Embedding model ──────────────────────────────────────────
+embedding:
+ model_name: "BAAI/bge-m3"
+ alternative_model: "BAAI/bge-large-en-v1.5"
+ device: "cpu"
+ batch_size: 8
+ max_seq_length: 512
+ normalize_embeddings: true
+
+# ── Chunking ─────────────────────────────────────────────────
+chunking:
+ strategy: "hybrid"
+ recursive:
+   chunk_size: 1000
+   chunk_overlap: 200
+   separators: ["\n\n", "\n", ". ", " ", ""]
+ semantic:
+   breakpoint_threshold_type: "percentile"
+   breakpoint_threshold_amount: 95
+ hybrid:
+   parent_chunk_size: 1800
+   parent_chunk_overlap: 200
+   child_chunk_size: 400
+   child_chunk_overlap: 50
+
+# ── Vector store ─────────────────────────────────────────────
+vectorstore:
+ type: "faiss"
+ index_type: "IndexFlatL2"
+ save_path: "./artifacts/faiss_index"
+ 
+# ── Retrieval ─────────────────────────────────────────────────
+retrieval:
+ strategy: "hybrid"
+ top_k: 20
+ mmr_lambda: 0.5
+ bm25_weight: 0.3
+ vector_weight: 0.7
+# ── Reranking ─────────────────────────────────────────────────
+reranking:
+ enabled: true
+ model: "cross-encoder/ms-marco-MiniLM-L-6-v2"
+ top_n: 5
+# ── LLM ──────────────────────────────────────────────────────
+llm:
+ provider: "ollama"
+ ollama:
+   base_url: "http://localhost:11434"
+   model: "llama3.1"
+   temperature: 0.1
+   max_tokens: 1024
+   context_window: 8192
+ azure_openai:
+   deployment_name: "gpt-4o"
+   temperature: 0.1
+   max_tokens: 1024
+# ── Evaluation ───────────────────────────────────────────────
+evaluation:
+ metrics:
+   - faithfulness
+   - answer_relevancy
+   - context_precision
+   - context_recall
+ test_questions_path: "./src/evaluation/test_questions.json"
+# ── Biomedical preprocessing ─────────────────────────────────
+preprocessing:
+ remove_references_section: true
+ remove_page_numbers: true
+ remove_headers_footers: true
+ min_chunk_length: 100
+ exclude_figure_captions: false
+ detect_equations: true

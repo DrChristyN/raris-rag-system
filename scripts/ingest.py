@@ -217,8 +217,7 @@ def print_summary(
 
         if table_pending:
             print(
-                f"    Table pages needing pdfplumber: "
-                f"{len(table_pending)}"
+                f"    Table pages needing pdfplumber: " f"{len(table_pending)}"
             )
 
     # Output files created
@@ -363,8 +362,14 @@ def main():
     chunker = get_chunker(strategy, config)
 
     chunks  = chunker.chunk(clean_pages)
-
     save_chunks(chunks, processed_dir)
+    if hasattr(chunker, 'parent_store'):
+        parent_store_path=(
+            Path(processed_dir)/'parent_store.json'
+        )
+        chunker.save_parent_store(
+            str(parent_store_path)
+        )
 
     # ── Step 3 — Print alert summary ──────────────────────────
 
@@ -386,14 +391,6 @@ def main():
 
     )
 
-
-# ── Entry point ───────────────────────────────────────────────
-
-# main() only runs when script is executed directly.
-
-# Not when imported by another module.
-
 if __name__ == "__main__":
-
     main()
  

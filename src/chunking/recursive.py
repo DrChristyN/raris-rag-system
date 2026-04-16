@@ -224,7 +224,6 @@ class RecursiveChunker(BaseChunker):
         chunk_size: int
     ) -> List[str]:
 
-s
         pieces = []
         start  = 0
         while start < len(text):

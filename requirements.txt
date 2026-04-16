@@ -21,7 +21,7 @@ pypdf>=4.0.1,<5.0.0
 ollama
 ragas
 datasets
-
+Get
 python-dotenv
 pyyaml
 tqdm

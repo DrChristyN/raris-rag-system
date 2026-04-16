@@ -23,10 +23,12 @@ embedding:
 
 # ── Chunking ─────────────────────────────────────────────────
 chunking:
- strategy: "hybrid"
+ strategy: "recursive"
  recursive:
    chunk_size: 1000
    chunk_overlap: 200
+   min_chunk_size: 150
+   target_chunk_size: 400
    separators: ["\n\n", "\n", ". ", " ", ""]
  semantic:
    breakpoint_threshold_type: "percentile"

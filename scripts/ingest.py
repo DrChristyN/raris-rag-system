@@ -44,11 +44,8 @@ def check_raw_data(raw_dir: str) -> list:
 
         print(f"\nERROR: No PDF files found in {raw_dir}")
         print(
-
             "Copy your papers and thesis into "
-
             "data/raw/ before running this script."
-
         )
 
         sys.exit(1)
@@ -66,25 +63,15 @@ def save_chunks(
     chunks_data = [
 
         {
-
             "text":        c.text,
-
             "chunk_index": c.chunk_index,
-
             "source_file": c.source_file,
-
             "page_number": c.page_number,
-
             "doc_type":    c.doc_type,
-
             "strategy":    c.strategy,
-
             "chunk_size":  c.chunk_size,
-
             "parent_id":   c.parent_id,
-
             "metadata":    c.metadata
-
         }
 
         for c in chunks
@@ -124,11 +111,8 @@ def print_step(
 def print_summary(
 
     documents:     list,
-
     clean_pages:   list,
-
     chunks:        list,
-
     pending_pages: list
 
 ) -> None:
@@ -177,8 +161,6 @@ def print_summary(
             f"{pending_str}"
 
         )
-
-    # Chunk statistics
 
     if chunks:
 
@@ -240,8 +222,6 @@ def print_summary(
             f"    data/processed/pending_pages.json"
         )
 
-    # Next step instructions
-
     print(f"\n  Next steps:")
 
     if pending_pages:
@@ -265,42 +245,28 @@ def main():
 
     print_header()
 
-    # ── Load configuration ────────────────────────────────────
-
     print("\nLoading configuration...")
-
     config        = load_config()
-
     raw_dir       = config['paths']['raw_data']
-
     processed_dir = config['paths']['processed_data']
-
     strategy      = config['chunking']['strategy']
-
     print(f"  Raw data       : {raw_dir}")
-
     print(f"  Output         : {processed_dir}")
-
     print(f"  Chunking       : {strategy}")
-
     print(f"  LLM provider   : {config['llm']['provider']}")
 
     print(
 
         f"  Embedding      : "
-
         f"{config['embedding']['model_name']}"
 
     )
-
-    # ── Check PDFs exist ──────────────────────────────────────
 
     pdf_files = check_raw_data(raw_dir)
 
     print(
 
         f"\nFound {len(pdf_files)} PDF(s) "
-
         f"in {raw_dir}:"
 
     )
@@ -308,21 +274,16 @@ def main():
     for f in pdf_files:
 
         size_mb = f.stat().st_size / 1024 / 1024
-
         print(f"  {f.name:<45} {size_mb:.1f} MB")
 
     # ── Step 1 — Load PDFs ────────────────────────────────────
 
     print_step(1, "Loading PDFs")
-
     loader    = PDFLoader(config)
-
     documents = loader.load_directory(raw_dir)
 
     if not documents:
-
         print("ERROR: No documents loaded.")
-
         sys.exit(1)
 
     loader.save_processed(documents, processed_dir)
@@ -338,23 +299,16 @@ def main():
     )
 
     preprocessor = Preprocessor(config)
-
     clean_pages  = preprocessor.clean_documents(documents)
-
     preprocessor.save_cleaned(clean_pages, processed_dir)
-
     preprocessor.save_alerts(processed_dir)
-
     if preprocessor.pending_pages:
-
         preprocessor.save_pending(processed_dir)
 
     # ── Step 2b — Chunk the clean pages ───────────────────────
 
     print_step(
-
         "2b",
-
         f"Chunking pages — strategy: {strategy}"
 
     )
@@ -371,22 +325,16 @@ def main():
             str(parent_store_path)
         )
 
-    # ── Step 3 — Print alert summary ──────────────────────────
 
     print_step(3, "Alert summary")
-
     preprocessor.print_alert_summary()
 
     # ── Final summary ─────────────────────────────────────────
 
     print_summary(
-
         documents,
-
         clean_pages,
-
         chunks,
-
         preprocessor.pending_pages
 
     )
